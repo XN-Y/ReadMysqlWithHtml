@@ -25,26 +25,36 @@ public class UserLogin extends HttpServlet {
         ServletConfig config = getServletConfig();
         String uname = config.getInitParameter("username");
         String upass = config.getInitParameter("userpass");
-        String ccSession = req.getSession().getAttribute("cc_session").toString();
-        resp.setContentType("text/html;charset=utf-8");
+        String ccSession = null;
+        if (req.getSession().getAttribute("cc_session") != null) {
+            ccSession = req.getSession().getAttribute("cc_session").toString();
+        } else {
+            ccSession = null;
+        }
 
+        resp.setContentType("text/html;charset=utf-8");
         PrintWriter out = resp.getWriter();
         //uname.equals(name)&&upass.equals(pass)
-        if (ccsession.equals(ccSession)) {
-            if (uname.equals(name) && upass.equals(pass)) {
+        if (ccsession.equalsIgnoreCase(ccSession)) {
+            if (uname != null && upass != null && uname.equals(name) && upass.equals(pass)) {
                 resp.sendRedirect(req.getContextPath() + "/list");
                 //登陆成功
+                req.getSession().removeAttribute("cc_session");
             } else {
                 //登陆失败
                 req.getRequestDispatcher("/login_err.jsp").forward(req, resp);
                 String login_error = "账号或密码错误";
                 req.getSession().setAttribute("login_error", login_error);
+                req.getSession().removeAttribute("cc_session");
+
             }
 
         } else {
             String cc_error = "验证码错误";
             req.getSession().setAttribute("cc_error", cc_error);
             req.getRequestDispatcher("/login_err.jsp").forward(req, resp);
+            req.getSession().removeAttribute("cc_session");
+
         }
     }
 }

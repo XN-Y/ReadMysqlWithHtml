@@ -32,8 +32,8 @@ public class CheckCode extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int width = 500;
-        int heigh = 300;
+        int width = 360;
+        int heigh = 180;
 
         Random random = new Random();
 
@@ -42,41 +42,50 @@ public class CheckCode extends HttpServlet {
         BufferedImage image = new BufferedImage(width, heigh, BufferedImage.TYPE_INT_RGB);
         //2 美化图片
         //2.1 填充背景色
+        // Graphics2D g = (Graphics2D) image.getGraphics();
         Graphics g = image.getGraphics();
         g.setColor(cl());
         Color cc = g.getColor();
+        //填充画布
         g.fillRect(0, 0, width, heigh);
         //2.2边框
         g.setColor(cl());
-        g.drawRect(0, 0, width - 1, heigh - 1);
-        String str = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm023456789";
+        //g.drawRect(0, 0, width - 1, heigh - 1);
+        g.fillRect(0, 0, width, heigh);
+        String str = "0QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm023456789\u5bff\u5f04\u9ea6\u5f62\u8fdb\u6212\u541e\u8fdc\u8fdd\u8fd0\u6276\u629a\u575b\u6280\u574f\u6270\u62d2\u627e\u6279\u5740\u8d70\u6284";
         //生成随机角标
-
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 5; i++) {
+        getReverseColorOfGraphics(g);
+        for (int i = 1; i < 6; i++) {
             int index = random.nextInt(str.length());
             //获取字符
             char c = str.charAt(index);
+            /*char c = str1.charAt(index);*/
             builder.append(c);
-            //2.3验证码 &HFFFFFF
-            g.setColor(new Color(0xFFFFFF - cc.getRGB()));
-            g.drawString(c + "", width / 6 * i + 15, heigh / 2);
+            //2.3验证码 颜色相较于画布取反
+            g.setFont(new Font(Font.DIALOG, Font.BOLD, 30));
+            g.drawString(c + "", width / 6 * i, heigh / 2);
         }
         String cc_session = builder.toString();
+        System.out.println(cc_session);
         //存入session
         req.getSession().setAttribute("cc_session", cc_session);
         //2.4干扰线段
         g.setColor(cl());
         //随机坐标点
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 60; i++) {
             int x1 = random.nextInt(width);
             int x2 = random.nextInt(width);
             int y1 = random.nextInt(heigh);
             int y2 = random.nextInt(heigh);
             g.drawLine(x1, y1, x2, y2);
         }
-
+        //2.5干扰点
+        for (int i = 0; i < 1000; i++) {
+            g.drawRect(random.nextInt(width), random.nextInt(heigh), 1, 1);
+        }
         ImageIO.write(image, "jpg", resp.getOutputStream());
+
     }
 
     public Color cl() {
@@ -90,6 +99,10 @@ public class CheckCode extends HttpServlet {
         z = random.nextInt(255);
         Color c = new Color(x, y, z);
         return c;
+    }
+
+    public void getReverseColorOfGraphics(Graphics g) {
+        g.setColor(new Color(0xFFFFFF - g.getColor().getRGB()));
     }
 
 }

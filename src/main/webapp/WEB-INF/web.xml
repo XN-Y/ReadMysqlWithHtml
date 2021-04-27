@@ -7,6 +7,23 @@
         <welcome-file>login.jsp</welcome-file>
 
     </welcome-file-list>
+    <env-entry>
+        <env-entry-name>hello</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>Hello, Welcome to the JavaEE Resource Injection.</env-entry-value>
+    </env-entry>
+
+    <env-entry>
+        <env-entry-name>i</env-entry-name>
+        <env-entry-type>java.lang.Integer</env-entry-type>
+        <env-entry-value>30</env-entry-value>
+    </env-entry>
+
+    <env-entry>
+        <env-entry-name>persons</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>This is a book.</env-entry-value>
+    </env-entry>
     <context-param>
         <param-name>school</param-name>
         <param-value>TJAU</param-value>

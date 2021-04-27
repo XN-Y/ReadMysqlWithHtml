@@ -38,7 +38,7 @@ public class jdbcdemo5 {
 
     }
 
-    public static boolean login(String username, String password) {
+    public static boolean login(String username, String password) throws SQLException {
         if (username == null || password == null) {
             return false;
         }
